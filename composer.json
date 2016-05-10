@@ -1,0 +1,24 @@
+{
+    "name": "wvdongen/cakephp-sparkpost",
+    "description": "SparkPost CakePHP plugin",
+    "type": "cakephp-plugin",
+    "keywords": ["cakephp", "sparkpost", "mandrill", "api"],
+    "homepage": "https://github.com/wvdongen/cakephp-sparkpost",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Wouter van Dongen",
+            "homepage": "https://github.com/wvdongen",
+            "role": "Author"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "composer/installers": "*",
+        "sparkpost/php-sparkpost": "~1.0",
+        "guzzlehttp/guzzle": "~6.0"
+    },
+    "extra": {
+        "installer-name": "SparkPost"
+    }
+}
