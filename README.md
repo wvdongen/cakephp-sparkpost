@@ -38,6 +38,7 @@ class EmailConfig {
   );
 }
 ```
+An optional key 'timeout' can be provided too.
 
 ## Requirements
 
