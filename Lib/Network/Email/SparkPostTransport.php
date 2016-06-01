@@ -120,11 +120,14 @@ class SparkPostTransport extends AbstractTransport {
 		$message = array_merge($message, $this->_headers);
 
 		// Load SparkPost configuration settings
-		$apiKey = $this->_config['api_key'];
+		$config = ['key' => $this->_config['api_key']];
+		if (isset($this->_config['timeout'])) {
+			$config['timeout'] = $this->_config['timeout'];
+		}
 		// Set up HTTP request adapter
 		$httpAdapter = new Ivory\HttpAdapter\Guzzle6HttpAdapter(new GuzzleHttp\Client());
 		// Create SparkPost API accessor
-		$sparkpost = new SparkPost\SparkPost($httpAdapter, ['key' => $apiKey]);
+		$sparkpost = new SparkPost\SparkPost($httpAdapter, $config);
 
 		// Send message
 		try {
