@@ -147,8 +147,8 @@ class SparkPostTransport extends AbstractTransport {
 			$stack->push(
 				GuzzleHttp\Middleware::log(
 				class_exists('\\Cake\\Log\\Log') ? new \Cake\Log\Log() : new Cake2PsrLog(),
-					new GuzzleHttp\MessageFormatter(isset($this->_config['format']) ? $this->_config['format'] : '{response}'),
-					isset($this->_config['level']) ? $this->_config['level'] : 'debug'
+					new GuzzleHttp\MessageFormatter(isset($this->_config['sparkpost']['log']['format']) ? $this->_config['sparkpost']['log']['format'] : '{response}'),
+					isset($this->_config['sparkpost']['log']['level']) ? $this->_config['sparkpost']['log']['level'] : 'debug'
 				)
 			);
 			$config = [
