@@ -1,5 +1,6 @@
 <?php
 App::uses('AbstractTransport', 'Network/Email');
+App::uses('Cake2PsrLog', 'SparkPost.Log');
 
 /**
  * @see https://developers.sparkpost.com/api/
@@ -120,23 +121,41 @@ class SparkPostTransport extends AbstractTransport {
 		$message = array_merge($message, $this->_headers);
 
 		// Load SparkPost configuration settings
-		$config = ['key' => $this->_config['api_key']];
-		if (isset($this->_config['timeout'])) {
-			$config['timeout'] = $this->_config['timeout'];
+		$config = ['key' => $this->_config['sparkpost']['api_key']];
+		if (isset($this->_config['sparkpost']['timeout'])) {
+			$config['timeout'] = $this->_config['sparkpost']['timeout'];
 		}
 		// Set up HTTP request adapter
-		$httpAdapter = new Ivory\HttpAdapter\Guzzle6HttpAdapter(new GuzzleHttp\Client());
+		$httpAdapter = new Ivory\HttpAdapter\Guzzle6HttpAdapter($this->__getClient());
 		// Create SparkPost API accessor
 		$sparkpost = new SparkPost\SparkPost($httpAdapter, $config);
 
 		// Send message
 		try {
 			return $sparkpost->transmission->send($message);
-		} catch(APIResponseException $e) {
+		} catch(SparkPost\APIResponseException $e) {
 				// TODO: Determine if BRE is the best exception type
 				throw new BadRequestException(sprintf('SparkPost API error %d (%d): %s (%s)',
 					$e->getAPICode(), $e->getCode(), ucfirst($e->getAPIMessage()), $e->getAPIDescription()));
 		}
+	}
+
+	private function __getClient() {
+		$config = [];
+		if (isset($this->_config['sparkpost']['log'])) {
+			$stack = GuzzleHttp\HandlerStack::create();
+			$stack->push(
+				GuzzleHttp\Middleware::log(
+				class_exists('\\Cake\\Log\\Log') ? new \Cake\Log\Log() : new Cake2PsrLog(),
+					new GuzzleHttp\MessageFormatter(isset($this->_config['sparkpost']['log']['format']) ? $this->_config['sparkpost']['log']['format'] : '{response}'),
+					isset($this->_config['sparkpost']['log']['level']) ? $this->_config['sparkpost']['log']['level'] : 'debug'
+				)
+			);
+			$config = [
+				'handler' => $stack,
+			];
+		}
+		return new GuzzleHttp\Client($config);
 	}
 
 }

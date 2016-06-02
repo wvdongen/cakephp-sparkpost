@@ -33,12 +33,18 @@ Create the file app/Config/email.php with the class EmailConfig.
 class EmailConfig {
   public $sparkPost = array(
     'transport' => 'SparkPost.SparkPost',
-    'api_key' => 'YOUR_API_KEY',
     'emailFormat' => 'both',
+    'sparkpost' => array(
+        'api_key' => 'YOUR_API_KEY',
+        'timeout' => '120', // optional, set non-default timeout
+        'log' => array( // optional, write to CakeLog
+            'level' => 'debug', // optional, see Psr\Log\LogLevel, but cannot use class constants here.
+            'format' => '{response}', // optional, string with token substitution, see https://github.com/guzzle/guzzle/blob/master/src/MessageFormatter.php#L12'.
+        ),
+    ),
   );
 }
 ```
-An optional key 'timeout' can be provided too.
 
 ## Requirements
 
