@@ -34,14 +34,14 @@ class EmailConfig {
   public $sparkPost = array(
     'transport' => 'SparkPost.SparkPost',
     'emailFormat' => 'both',
-    'sparkpost' => [
+    'sparkpost' => array(
         'api_key' => 'YOUR_API_KEY',
         'timeout' => '120', // optional, set non-default timeout
-        'log' => [ // optional, write to CakeLog
+        'log' => array( // optional, write to CakeLog
             'level' => 'debug', // optional, see Psr\Log\LogLevel, but cannot use class constants here.
             'format' => '{response}', // optional, string with token substitution, see https://github.com/guzzle/guzzle/blob/master/src/MessageFormatter.php#L12'.
-        ],
-    ],
+        ),
+    ),
   );
 }
 ```
