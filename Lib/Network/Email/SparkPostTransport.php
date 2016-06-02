@@ -133,7 +133,7 @@ class SparkPostTransport extends AbstractTransport {
 		// Send message
 		try {
 			return $sparkpost->transmission->send($message);
-		} catch(APIResponseException $e) {
+		} catch(SparkPost\APIResponseException $e) {
 				// TODO: Determine if BRE is the best exception type
 				throw new BadRequestException(sprintf('SparkPost API error %d (%d): %s (%s)',
 					$e->getAPICode(), $e->getCode(), ucfirst($e->getAPIMessage()), $e->getAPIDescription()));
