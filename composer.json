@@ -16,6 +16,8 @@
         "php": ">=5.4.0",
         "composer/installers": "*",
         "sparkpost/php-sparkpost": "~1.0",
+        "psr/log": "1.0.0",
+        
         "guzzlehttp/guzzle": "~6.0"
     },
     "extra": {
