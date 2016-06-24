@@ -61,7 +61,8 @@ class SparkPostTransport extends AbstractTransport {
 				'name' => $fromName,
 				'email' => $fromEmail
 			],
-			'subject' => $this->_cakeEmail->subject(),
+			// SparkPost does not like RFC 2047 encoding for the subject, see https://developers.sparkpost.com/api/transmissions.
+			'subject' => mb_decode_mimeheader($this->_cakeEmail->subject()),
 			'recipients' => [],
 			'transactional' => true
 		];
