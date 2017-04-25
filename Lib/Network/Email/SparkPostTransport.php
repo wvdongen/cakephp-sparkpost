@@ -4,7 +4,7 @@ App::uses('Cake2PsrLog', 'SparkPost.Log');
 
 /**
  * @see https://developers.sparkpost.com/api/
- * @see https://github.com/SparkPost/php-sparkpost
+ * @see https://github.com/SparkPost/sparkpost
  */
 class SparkPostTransport extends AbstractTransport {
 
@@ -55,17 +55,27 @@ class SparkPostTransport extends AbstractTransport {
 		$fromName = $from[$fromEmail];
 
 		$message = [
-			'html' => $this->_cakeEmail->message('html'),
-			'text' => $this->_cakeEmail->message('text'),
-			'from' => [
-				'name' => $fromName,
-				'email' => $fromEmail
+			'options' => [],
+			'content' => [
+				'html' => $this->_cakeEmail->message('html'),
+				'text' => $this->_cakeEmail->message('text'),
+				'from' => [
+					'name' => $fromName,
+					'email' => $fromEmail
+				],
+				// SparkPost does not like RFC 2047 encoding for the subject, see https://developers.sparkpost.com/api/transmissions.
+				'subject' => mb_decode_mimeheader($this->_cakeEmail->subject()),
 			],
-			// SparkPost does not like RFC 2047 encoding for the subject, see https://developers.sparkpost.com/api/transmissions.
-			'subject' => mb_decode_mimeheader($this->_cakeEmail->subject()),
 			'recipients' => [],
-			'transactional' => true
 		];
+
+		if ( ! empty($this->_cakeEmail->replyTo())) {
+			$message['content']['reply_to'] = array_values($this->_cakeEmail->replyTo())[0];
+		}
+
+		if ( ! empty($this->_config['sparkpost']['options'])) {
+			$message['options'] = $this->_config['sparkpost']['options'];
+		}
 
 		foreach ($this->_cakeEmail->to() as $email => $name) {
 			$message['recipients'][] = [
@@ -73,7 +83,7 @@ class SparkPostTransport extends AbstractTransport {
 					'email' => $email,
 					'name' => $name,
 				],
-				'tags' => $this->_headers['tags']
+				'tags' => empty($this->_headers['tags']) ? null : $this->_headers['tags'],
 			];
 		}
 
@@ -83,7 +93,7 @@ class SparkPostTransport extends AbstractTransport {
 					'email' => $email,
 					'name' => $name,
 				],
-				'tags' => $this->_headers['tags']
+				'tags' => empty($this->_headers['tags']) ? null : $this->_headers['tags'],
 			];
 		}
 
@@ -93,7 +103,7 @@ class SparkPostTransport extends AbstractTransport {
 					'email' => $email,
 					'name' => $name,
 				],
-				'tags' => $this->_headers['tags']
+				'tags' => empty($this->_headers['tags']) ? null : $this->_headers['tags'],
 			];
 		}
 
@@ -126,14 +136,14 @@ class SparkPostTransport extends AbstractTransport {
 		if (isset($this->_config['sparkpost']['timeout'])) {
 			$config['timeout'] = $this->_config['sparkpost']['timeout'];
 		}
-		// Set up HTTP request adapter
-		$httpAdapter = new Ivory\HttpAdapter\Guzzle6HttpAdapter($this->__getClient());
-		// Create SparkPost API accessor
-		$sparkpost = new SparkPost\SparkPost($httpAdapter, $config);
+
+		$httpClient = new Http\Adapter\Guzzle6\Client($this->__getClient());
+		$sparkpost = new SparkPost\SparkPost($httpClient, $config);
 
 		// Send message
 		try {
-			return $sparkpost->transmission->send($message);
+			$promise = $sparkpost->transmissions->post($message);
+			return $promise->wait();
 		} catch(SparkPost\APIResponseException $e) {
 				// TODO: Determine if BRE is the best exception type
 				throw new BadRequestException(sprintf('SparkPost API error %d (%d): %s (%s)',

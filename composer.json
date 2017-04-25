@@ -15,10 +15,10 @@
     "require": {
         "php": ">=5.4.0",
         "composer/installers": "*",
-        "sparkpost/php-sparkpost": "~1.0",
-        "psr/log": "1.0.0",
-        
-        "guzzlehttp/guzzle": "~6.0"
+        "guzzlehttp/guzzle": "dev-master",
+        "php-http/guzzle6-adapter": "dev-master",
+        "sparkpost/sparkpost": "~2.0",
+        "psr/log": "1.0.0"
     },
     "extra": {
         "installer-name": "SparkPost"

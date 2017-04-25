@@ -37,6 +37,10 @@ class EmailConfig {
     'sparkpost' => array(
         'api_key' => 'YOUR_API_KEY',
         'timeout' => '120', // optional, set non-default timeout
+        'options' => [
+           // See https://developers.sparkpost.com/api/transmissions.html
+          'transactional' => false,
+        ],
         'log' => array( // optional, write to CakeLog
             'level' => 'debug', // optional, see Psr\Log\LogLevel, but cannot use class constants here.
             'format' => '{response}', // optional, string with token substitution, see https://github.com/guzzle/guzzle/blob/master/src/MessageFormatter.php#L12'.
