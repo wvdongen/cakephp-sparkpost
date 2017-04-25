@@ -15,8 +15,8 @@
     "require": {
         "php": ">=5.4.0",
         "composer/installers": "*",
-        "guzzlehttp/guzzle": "dev-master",
-        "php-http/guzzle6-adapter": "dev-master",
+        "guzzlehttp/guzzle": "~6.2",
+        "php-http/guzzle6-adapter": "~1.1",
         "sparkpost/sparkpost": "~2.0",
         "psr/log": "1.0.0"
     },
