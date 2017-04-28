@@ -111,16 +111,15 @@ class SparkPostTransport extends AbstractTransport {
 
 		$attachments = $this->_cakeEmail->attachments();
 		if (!empty($attachments)) {
-			$message['attachments'] = array();
 			foreach ($attachments as $file => $data) {
 				if (!empty($data['contentId'])) {
-					$message['inlineImages'][] = array(
+					$message['content']['inline_images'][] = array(
 						'type' => $data['mimetype'],
 						'name' => $data['contentId'],
 						'data' => base64_encode(file_get_contents($data['file'])),
 					);
 				} else {
-					$message['attachments'][] = array(
+					$message['content']['attachments'][] = array(
 						'type' => $data['mimetype'],
 						'name' => $file,
 						'data' => base64_encode(file_get_contents($data['file'])),
