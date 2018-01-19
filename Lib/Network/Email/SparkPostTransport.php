@@ -76,6 +76,7 @@ class SparkPostTransport extends AbstractTransport {
 		if ( ! empty($this->_config['sparkpost']['options'])) {
 			$message['options'] = $this->_config['sparkpost']['options'];
 		}
+		$message['options'] = (object) $message['options'];
 
 		foreach ($this->_cakeEmail->to() as $email => $name) {
 			$message['recipients'][] = [
